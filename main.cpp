@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
     int seed1=std::atoi(argv[3]);
     int Nbin=std::atoi(argv[4]);
     double l=std::atof(argv[5]);
-    simulation(t, N_mol, seed1, Nbin, l);
+    //simulation(t, N_mol, seed1, Nbin, l);
+    simulationwithhole(t, N_mol, seed1, Nbin, l);
     return 0;
 }
