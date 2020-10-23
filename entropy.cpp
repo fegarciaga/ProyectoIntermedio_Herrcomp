@@ -2,6 +2,11 @@
 
 void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
 {
+
+    std::ofstream fout("datossimulation.txt", std::ofstream::out);
+    fout.precision(15);
+    fout.setf(std::ios::scientific);
+    
     //Creates random distributon
     std::mt19937 gen(seed);
     std::uniform_real_distribution<double> dis(-1.0, 1.0);
@@ -33,7 +38,7 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
         }
     }
 
-    std::cout << 0 << "\t"<<entr<<"\t"<< dropsize(z, N)<< "\n";
+    fout << 0 << "\t"<<entr<<"\t"<< dropsize(z, N)<< "\n";
     //evolution
     for (int ii=1; ii<T_MAX; ++ii)
     {
@@ -59,8 +64,9 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
                 entr=entropy(entr, bin1, bin2, newbin1, newbin2, lattice, NBINS, N);
             }
         }
-        std::cout<<ii<<"\t"<<entr<<"\t"<< dropsize(z, N)<<"\n";
+        fout<<ii<<"\t"<<entr<<"\t"<< dropsize(z, N)<<"\n";
     }
+    fout.close();
     delete [] z;
     delete [] lattice;
     
@@ -125,6 +131,11 @@ void prob (double *distribution, double *position, int psize, int dsize, double 
 
 void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
 {
+
+    std::ofstream fout("datoshole.txt", std::ofstream::out);
+    fout.precision(15);
+    fout.setf(std::ios::scientific);
+    
     //Creates random distributon
     std::mt19937 gen(seed);
     std::uniform_real_distribution<double> dis(-1.0, 1.0);
@@ -142,7 +153,7 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
     //Calculates initial probability density
     prob(lattice, z, N, NBINS, Nsize);
 
-    std::cout<< 0<< "\t"<< Number (lattice, NBINS, N)<<"\n";
+    fout<< 0<< "\t"<< Number (lattice, NBINS, N)<<"\n";
 
     //evolution
     for (int ii=1; ii<T_MAX; ++ii)
@@ -184,8 +195,9 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
                 }
             }
         }
-        std::cout << ii<<"\t"<<Number(lattice, NBINS, N)<<"\n";
+        fout << ii<<"\t"<<Number(lattice, NBINS, N)<<"\n";
     }
+    fout.close();
     delete [] z;
     delete [] lattice;
     
