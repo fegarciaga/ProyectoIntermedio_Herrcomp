@@ -14,9 +14,15 @@ int main(int argc, char* argv[])
     fin >> t >> tmp;
     fin >> seed1 >> tmp;
     fin.close();
-    std::cout<< t <<"\t"<<N_mol << "\t"<<seed1 <<"\t" << Nbin<<"\t"<<l<<"\n";
     Nbin=100;
-    simulation(t, N_mol, seed1, Nbin, l);
-    simulationwithhole(t, N_mol, seed1, Nbin, l);
+    std::string sim="datossimulation.txt", hol="datoshole.txt";
+    simulation(t, N_mol, seed1, Nbin, l, sim);
+    simulationwithhole(t, N_mol, seed1, Nbin, l, hol);
+    /* loop for finding the equilibrium time
+    for (int ii=5; ii<=25; ii+=5)
+    {
+        std::string fname = "datost_"+std::to_string(ii)+".txt";
+        simulation(t, N_mol, seed1, Nbin, ii, fname);
+        }*/
     return 0;
 }

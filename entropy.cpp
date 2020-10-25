@@ -1,9 +1,9 @@
 #include "entropy.h"
 
-void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
+void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize, std::string filename)
 {
 
-    std::ofstream fout("datossimulation.txt", std::ofstream::out);
+    std::ofstream fout(filename, std::ofstream::out);
     fout.precision(15);
     fout.setf(std::ios::scientific);
     
@@ -25,7 +25,8 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
     //Calculates initial probability density
     prob(lattice, z, N, NBINS, Nsize);
      
-
+    double r=dropsize(z, N);
+    
     //Calculates initial entropy
     for (int ii=0; ii<NBINS;++ii)
     {
@@ -38,7 +39,7 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
         }
     }
 
-    fout << 0 << "\t"<<entr<<"\t"<< dropsize(z, N)<< "\n";
+    fout << 0 << "\t"<<entr<<"\t"<< r<< "\n";
     //evolution
     for (int ii=1; ii<T_MAX; ++ii)
     {
@@ -58,13 +59,17 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize)
             {
                 newbin1=int((aux1+Nsize)/DX);
                 newbin2=int((aux2+Nsize)/DX);
+                r*=r;
+                r-=(z[particle*2]*z[particle*2]+z[particle*2+1]*z[particle*2+1])/N;
+                r+=(aux1*aux1+aux2*aux2)/N;
+                r=std::sqrt(r);
                 z[particle*2]=aux1;
                 z[particle*2+1]=aux2;
                 //Calculates the entropy
                 entr=entropy(entr, bin1, bin2, newbin1, newbin2, lattice, NBINS, N);
             }
         }
-        fout<<ii<<"\t"<<entr<<"\t"<< dropsize(z, N)<<"\n";
+        fout<<ii<<"\t"<<entr<<"\t"<<r<<"\n";
     }
     fout.close();
     delete [] z;
@@ -129,10 +134,10 @@ void prob (double *distribution, double *position, int psize, int dsize, double 
     return;
 }
 
-void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
+void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize, std::string filename)
 {
 
-    std::ofstream fout("datoshole.txt", std::ofstream::out);
+    std::ofstream fout(filename, std::ofstream::out);
     fout.precision(15);
     fout.setf(std::ios::scientific);
     
@@ -152,8 +157,8 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
 
     //Calculates initial probability density
     prob(lattice, z, N, NBINS, Nsize);
-
-    fout<< 0<< "\t"<< Number (lattice, NBINS, N)<<"\n";
+    int n=N;
+    fout<< 0<< "\t"<<n<<"\n";
 
     //evolution
     for (int ii=1; ii<T_MAX; ++ii)
@@ -181,7 +186,7 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
                     z[particle*2+1]=aux2;
                     lattice[bin1*NBINS+bin2]-=1.0/N;
                     lattice[newbin1*NBINS+newbin2]+=1.0/N;
-                    //Calculates the entropy
+
                 }
             }
             if(aux1>Nsize)
@@ -192,10 +197,11 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
                     z[particle*2+1]=aux2;
                     lattice[bin1*NBINS+bin2]-=1.0/N;
                     lattice[NBINS*NBINS]+=1.0/N;
+                    n-=1;
                 }
             }
         }
-        fout << ii<<"\t"<<Number(lattice, NBINS, N)<<"\n";
+        fout << ii<<"\t"<<n<<"\n";
     }
     fout.close();
     delete [] z;
@@ -204,12 +210,3 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize)
     return;
 }
 
-int Number (double * distribution, int dsize, int psize)
-{
-    double sum=0;
-    for(int ii=0; ii<dsize*dsize; ++ii)
-    {
-        sum+=distribution[ii];
-    }
-    return int(sum*psize);
-}
