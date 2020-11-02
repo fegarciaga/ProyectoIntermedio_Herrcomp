@@ -6,11 +6,12 @@
 #include <cmath>
 #include <fstream>
 #include <string>
+#include <vector>
 
 void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize, std::string filename);
-double entropy (double initialvalue, int NBIN1, int NBIN2, int NNEWBIN1, int NNEWBIN2, double *distribution, int Ntotal, int size);
-double dropsize (double * position, int Nsize);
-void prob (double *distribution, double *position, int psize, int dsize, double range);
+double Entropy (double initialvalue, int NBIN1, int NBIN2, int NNEWBIN1, int NNEWBIN2, std::vector<double> &distribution, int Ntotal, int size);
+double dropsize (std::vector<double> & position, int Nsize);
+void prob (std::vector<double> &distribution, std::vector<double> &position, int psize, int dsize, double range);
 void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize, std::string filename);
 
 #endif

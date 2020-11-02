@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-std=c++17
-SANITFLAGS =-fsanitize=leak -fsanitize=undefined -fsanitize=address -g
+SANITFLAGS =-fsanitize=leak -fsanitize=undefined -fsanitize=address 
 OPFLAGS= -O2
 GPROFFLAGS= -pg
 VALGRINDFLAGS=--tool=memcheck --track-origins=yes --leak-check=full
@@ -33,6 +33,11 @@ cachegrind: $(SOURCES)
 memcheck: $(SOURCES)
 	$(CXX) $(CXXFLAGS) $(OPFLAGS) $^ -c $<
 	$(CXX) $(CXXFLAGS) $(OPFLAGS) $(OBJ)
-	valgrind $(VALGRINDFLAGS) ./a.out 
+	valgrind $(VALGRINDFLAGS) ./a.out
+
+test: test_catch2.x
+
+test_catch2.x: test_catch2.o entropy.o	
+	g++ $^ -o $@
 clean:
 	rm -f *.x *.o a.out *.out.* *.out

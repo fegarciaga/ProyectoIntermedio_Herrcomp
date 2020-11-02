@@ -12,10 +12,9 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize, std::st
     std::uniform_real_distribution<double> dis(-1.0, 1.0);
     
     //Defines a vector with position
-    double *z = new double [N*2] {0.0};
-
+    std::vector<double> z(N*2,0.0);
     //Defines the lattice vector
-    double *lattice = new double [NBINS*NBINS] {0.0};
+    std::vector<double> lattice(NBINS*NBINS,0.0);
     double DX=2*Nsize/NBINS;
     double entr=0;
 
@@ -66,19 +65,17 @@ void simulation (double T_MAX, int N, int seed, int NBINS, double Nsize, std::st
                 z[particle*2]=aux1;
                 z[particle*2+1]=aux2;
                 //Calculates the entropy
-                entr=entropy(entr, bin1, bin2, newbin1, newbin2, lattice, NBINS, N);
+                entr=Entropy(entr, bin1, bin2, newbin1, newbin2, lattice, NBINS, N);
             }
         }
         fout<<ii<<"\t"<<entr<<"\t"<<r<<"\n";
     }
     fout.close();
-    delete [] z;
-    delete [] lattice;
     
     return;
 }
 
-double entropy (double initialvalue, int NBIN1, int NBIN2, int NNEWBIN1, int NNEWBIN2, double *distribution, int Ntotal, int size)
+double Entropy (double initialvalue, int NBIN1, int NBIN2, int NNEWBIN1, int NNEWBIN2, std::vector<double> &distribution, int Ntotal, int size)
 {
     if(std::fabs(distribution[NNEWBIN1*Ntotal+NNEWBIN2])>1e-10)
     {
@@ -111,7 +108,7 @@ double entropy (double initialvalue, int NBIN1, int NBIN2, int NNEWBIN1, int NNE
     return initialvalue;
 }
 
-double dropsize (double * position, int size)
+double dropsize (std::vector<double> & position, int size)
 {
     double distance=0;
     for (int ii=0; ii<2*size; ++ii)
@@ -121,7 +118,7 @@ double dropsize (double * position, int size)
     return std::sqrt(distance/size);
 }
 
-void prob (double *distribution, double *position, int psize, int dsize, double range)
+void prob (std::vector<double> &distribution, std::vector<double> &position, int psize, int dsize, double range)
 {
     double d=2*range/dsize;
     for (int ii=0; ii<psize; ++ii)
@@ -146,10 +143,9 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize,
     std::uniform_real_distribution<double> dis(-1.0, 1.0);
     
     //Defines a vector with position
-    double *z = new double [N*2] {0.0};
-
+    std::vector<double>z(N*2, 0.0);
     //Defines the lattice vector
-    double *lattice = new double [NBINS*NBINS+1] {0.0};
+    std::vector<double> lattice(NBINS*NBINS+1,0.0);
     double DX=2*Nsize/NBINS;
 
     //Fill vector with random position
@@ -204,9 +200,6 @@ void simulationwithhole (double T_MAX, int N, int seed, int NBINS, double Nsize,
         fout << ii<<"\t"<<n<<"\n";
     }
     fout.close();
-    delete [] z;
-    delete [] lattice;
-    
     return;
 }
 
