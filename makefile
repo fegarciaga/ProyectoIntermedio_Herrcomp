@@ -14,7 +14,7 @@ DEPS = entropy.h
 all: main.x 
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(SANITFLAGS)  $(OPFLAGS)  $^ -c $<
+	$(CXX) $(CXXFLAGS) $(SANITFLAGS)  $(OPFLAGS)  -c $^
 main.x: main.o entropy.o
 	$(CXX) $(CXXFLAGS) $(SANITFLAGS) $(OPFLAGS) $^ -o $@
 
@@ -36,6 +36,10 @@ memcheck: $(SOURCES)
 	valgrind $(VALGRINDFLAGS) ./a.out
 
 test: test_catch2.x
+
+test_catch2.o: test_catch2.cpp entropy.cpp
+	g++ -c $<
+	g++ -c entropy.cpp
 
 test_catch2.x: test_catch2.o entropy.o	
 	g++ $^ -o $@
